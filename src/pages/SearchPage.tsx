@@ -1,49 +1,97 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import type { Platform } from "@/types";
 import { Layout } from "@/components/Layout";
 import { PlatformFilter } from "@/components/PlatformFilter";
 import { ProfileList } from "@/components/ProfileList";
+import { SelectedListPanel } from "@/components/SelectedListPanel";
 import { extractProfiles, filterProfiles } from "@/utils/dataHelpers";
+import { useProfileStore } from "@/stores/useProfileStore";
+import { List } from "lucide-react";
 
 export function SearchPage() {
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [searchQuery, setSearchQuery] = useState("");
-  const [clickCount, setClickCount] = useState(0);
+  const [panelOpen, setPanelOpen] = useState(false);
+  const selectedProfiles = useProfileStore((s) => s.selectedProfiles);
 
-  const allProfiles = extractProfiles(platform);
-  const filtered = filterProfiles(allProfiles, searchQuery);
+  const allProfiles = useMemo(() => extractProfiles(platform), [platform]);
+  const filtered = useMemo(
+    () => filterProfiles(allProfiles, searchQuery),
+    [allProfiles, searchQuery]
+  );
 
-  const handleProfileClick = (username: string) => {
-    setClickCount(clickCount + 1);
-    console.log("Clicked profile:", username, "total clicks:", clickCount);
-  };
+  const handlePlatformChange = useCallback((p: Platform) => {
+    setPlatform(p);
+    setSearchQuery("");
+  }, []);
 
   return (
     <Layout title="Find Influencers">
-      <p className="text-gray-500 mb-4 text-sm">
-        Browse top creators across social platforms
-      </p>
+      <div className="flex gap-6">
+        {/* Main content */}
+        <div className="min-w-0 flex-1">
+          <div className="mb-6 text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+              Find Influencers
+            </h2>
+            <p className="mt-2 text-base text-slate-500 dark:text-slate-400">
+              Browse top creators across social platforms
+            </p>
+          </div>
 
-      <PlatformFilter
-        selected={platform}
-        onChange={(p) => {
-          setPlatform(p);
-          setSearchQuery("");
-        }}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-      />
+          <PlatformFilter
+            selected={platform}
+            onChange={handlePlatformChange}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+          />
 
-      <p className="text-xs text-gray-400 mb-2">
-        Showing {filtered.length} of {allProfiles.length} on {platform}
-      </p>
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Showing{" "}
+              <span className="font-semibold text-slate-900 dark:text-white">
+                {filtered.length}
+              </span>{" "}
+              of{" "}
+              <span className="font-semibold text-slate-900 dark:text-white">
+                {allProfiles.length}
+              </span>{" "}
+              profiles
+            </p>
 
-      <ProfileList
-        profiles={filtered}
-        platform={platform}
-        searchQuery={searchQuery}
-        onProfileClick={handleProfileClick}
-      />
+            {/* Mobile toggle for selected list */}
+            <button
+              onClick={() => setPanelOpen(true)}
+              className="flex items-center gap-2 rounded-xl bg-violet-50 px-3.5 py-2 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:bg-violet-500/10 dark:text-violet-400 dark:hover:bg-violet-500/20 lg:hidden"
+              aria-label="Open selected profiles panel"
+            >
+              <List className="h-4 w-4" />
+              {selectedProfiles.length > 0 && (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-600 text-[10px] font-bold text-white">
+                  {selectedProfiles.length}
+                </span>
+              )}
+            </button>
+          </div>
+
+          <ProfileList profiles={filtered} platform={platform} />
+        </div>
+
+        {/* Desktop sidebar */}
+        <div className="hidden lg:block">
+          <SelectedListPanel
+            isOpen={true}
+            onClose={() => setPanelOpen(false)}
+            isDesktop
+          />
+        </div>
+
+        {/* Mobile panel */}
+        <SelectedListPanel
+          isOpen={panelOpen}
+          onClose={() => setPanelOpen(false)}
+        />
+      </div>
     </Layout>
   );
 }
