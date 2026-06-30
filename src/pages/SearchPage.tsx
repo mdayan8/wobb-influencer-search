@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import type { Platform } from "@/types";
 import { Layout } from "@/components/Layout";
 import { PlatformFilter } from "@/components/PlatformFilter";
@@ -9,7 +10,9 @@ import { useProfileStore } from "@/stores/useProfileStore";
 import { List, Users, TrendingUp } from "lucide-react";
 
 export function SearchPage() {
-  const [platform, setPlatform] = useState<Platform>("instagram");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPlatform = (searchParams.get("platform") as Platform) || "instagram";
+  const [platform, setPlatform] = useState<Platform>(initialPlatform);
   const [searchQuery, setSearchQuery] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
   const { selectedProfiles, followedProfiles } = useProfileStore();
@@ -28,7 +31,8 @@ export function SearchPage() {
   const handlePlatformChange = useCallback((p: Platform) => {
     setPlatform(p);
     setSearchQuery("");
-  }, []);
+    setSearchParams({ platform: p }, { replace: true });
+  }, [setSearchParams]);
 
   return (
     <Layout title="Find Influencers">

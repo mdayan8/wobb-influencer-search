@@ -120,7 +120,7 @@ export function ProfileDetailPage() {
             Invalid profile
           </p>
           <Link
-            to="/"
+            to={`/?platform=${platform}`}
             className="mt-4 flex items-center gap-2 text-sm font-medium text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -152,7 +152,7 @@ export function ProfileDetailPage() {
             {state.message}
           </p>
           <Link
-            to="/"
+            to={`/?platform=${platform}`}
             className="mt-4 flex items-center gap-2 text-sm font-medium text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -244,7 +244,7 @@ export function ProfileDetailPage() {
     <Layout title={user.fullname}>
       <div className="mx-auto max-w-3xl">
         <Link
-          to="/"
+          to={`/?platform=${platform}`}
           className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-violet-600 dark:text-slate-400 dark:hover:text-violet-400"
         >
           <ArrowLeft className="h-4 w-4" />
