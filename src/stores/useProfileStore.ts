@@ -4,14 +4,14 @@ import type { UserProfileSummary } from "@/types";
 
 interface ProfileStore {
   selectedProfiles: UserProfileSummary[];
-  followedProfiles: Record<string, boolean>;
+  followedProfiles: Record<string, Record<string, boolean>>;
   addProfile: (profile: UserProfileSummary) => void;
   removeProfile: (userId: string) => void;
   isInList: (userId: string) => boolean;
   clearList: () => void;
-  toggleFollow: (userId: string) => void;
-  isFollowing: (userId: string) => boolean;
-  getFollowedCount: () => number;
+  toggleFollow: (platform: string, userId: string) => void;
+  isFollowing: (platform: string, userId: string) => boolean;
+  getFollowedCount: (platform: string) => number;
 }
 
 export const useProfileStore = create<ProfileStore>()(
@@ -45,21 +45,28 @@ export const useProfileStore = create<ProfileStore>()(
 
       clearList: () => set({ selectedProfiles: [] }),
 
-      toggleFollow: (userId) => {
-        set((state) => ({
-          followedProfiles: {
-            ...state.followedProfiles,
-            [userId]: !state.followedProfiles[userId],
-          },
-        }));
+      toggleFollow: (platform, userId) => {
+        set((state) => {
+          const platformFollows = state.followedProfiles[platform] || {};
+          return {
+            followedProfiles: {
+              ...state.followedProfiles,
+              [platform]: {
+                ...platformFollows,
+                [userId]: !platformFollows[userId],
+              },
+            },
+          };
+        });
       },
 
-      isFollowing: (userId) => {
-        return !!get().followedProfiles[userId];
+      isFollowing: (platform, userId) => {
+        return !!get().followedProfiles[platform]?.[userId];
       },
 
-      getFollowedCount: () => {
-        return Object.values(get().followedProfiles).filter(Boolean).length;
+      getFollowedCount: (platform) => {
+        const platformFollows = get().followedProfiles[platform] || {};
+        return Object.values(platformFollows).filter(Boolean).length;
       },
     }),
     {

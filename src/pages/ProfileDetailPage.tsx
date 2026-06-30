@@ -2,7 +2,7 @@ import { useEffect, useCallback, useReducer } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
-import type { FullUserProfile, ProfileDetailResponse } from "@/types";
+import type { FullUserProfile, Platform, ProfileDetailResponse } from "@/types";
 import {
   formatFollowers,
   formatNumber,
@@ -56,7 +56,7 @@ function profileReducer(
 export function ProfileDetailPage() {
   const { username } = useParams<{ username: string }>();
   const [searchParams] = useSearchParams();
-  const platform = searchParams.get("platform") || "unknown";
+  const platform = (searchParams.get("platform") || "instagram") as Platform;
   const [state, dispatch] = useReducer(profileReducer, { status: "idle" });
 
   const { addProfile, removeProfile, isInList, toggleFollow, isFollowing } =
@@ -106,10 +106,11 @@ export function ProfileDetailPage() {
           followers: profile.followers,
           engagements: profile.engagements,
           engagement_rate: profile.engagement_rate,
+          platform,
         });
       }
     },
-    [addProfile, removeProfile, isInList]
+    [addProfile, removeProfile, isInList, platform]
   );
 
   if (!username) {
@@ -278,15 +279,15 @@ export function ProfileDetailPage() {
                   </a>
                 )}
                 <button
-                  onClick={() => toggleFollow(user.user_id)}
+                  onClick={() => toggleFollow(platform, user.user_id)}
                   className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
-                    isFollowing(user.user_id)
+                    isFollowing(platform, user.user_id)
                       ? "bg-rose-100 text-rose-600 hover:bg-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:hover:bg-rose-500/25"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                   }`}
-                  aria-label={isFollowing(user.user_id) ? "Unfollow" : "Follow"}
+                  aria-label={isFollowing(platform, user.user_id) ? "Unfollow" : "Follow"}
                 >
-                  {isFollowing(user.user_id) ? (
+                  {isFollowing(platform, user.user_id) ? (
                     <>
                       <UserCheck className="h-4 w-4" />
                       Following

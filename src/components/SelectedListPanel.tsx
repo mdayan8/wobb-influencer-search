@@ -109,15 +109,15 @@ export const SelectedListPanel = memo(function SelectedListPanel({
                   </div>
                 </button>
                 <button
-                  onClick={() => toggleFollow(profile.user_id)}
+                  onClick={() => toggleFollow(profile.platform || "instagram", profile.user_id)}
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors ${
-                    isFollowing(profile.user_id)
+                    isFollowing(profile.platform || "instagram", profile.user_id)
                       ? "bg-rose-100 text-rose-600 hover:bg-rose-200 dark:bg-rose-500/15 dark:text-rose-400"
                       : "text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
                   }`}
-                  aria-label={isFollowing(profile.user_id) ? `Unfollow ${profile.fullname}` : `Follow ${profile.fullname}`}
+                  aria-label={isFollowing(profile.platform || "instagram", profile.user_id) ? `Unfollow ${profile.fullname}` : `Follow ${profile.fullname}`}
                 >
-                  {isFollowing(profile.user_id) ? (
+                  {isFollowing(profile.platform || "instagram", profile.user_id) ? (
                     <UserCheck className="h-3.5 w-3.5" />
                   ) : (
                     <UserPlus className="h-3.5 w-3.5" />

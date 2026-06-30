@@ -24,8 +24,8 @@ export function SearchPage() {
   );
 
   const followedCount = useMemo(
-    () => Object.values(followedProfiles).filter(Boolean).length,
-    [followedProfiles]
+    () => Object.values(followedProfiles[platform] || {}).filter(Boolean).length,
+    [followedProfiles, platform]
   );
 
   const handlePlatformChange = useCallback((p: Platform) => {

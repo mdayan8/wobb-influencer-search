@@ -20,7 +20,7 @@ export const ProfileCard = memo(function ProfileCard({
   const { addProfile, removeProfile, isInList, toggleFollow, isFollowing } =
     useProfileStore();
   const inList = isInList(profile.user_id);
-  const following = isFollowing(profile.user_id);
+  const following = isFollowing(platform, profile.user_id);
 
   const handleToggleList = useCallback(
     (e: React.MouseEvent) => {
@@ -28,18 +28,18 @@ export const ProfileCard = memo(function ProfileCard({
       if (inList) {
         removeProfile(profile.user_id);
       } else {
-        addProfile(profile);
+        addProfile({ ...profile, platform });
       }
     },
-    [inList, profile, addProfile, removeProfile]
+    [inList, profile, platform, addProfile, removeProfile]
   );
 
   const handleToggleFollow = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      toggleFollow(profile.user_id);
+      toggleFollow(platform, profile.user_id);
     },
-    [profile.user_id, toggleFollow]
+    [platform, profile.user_id, toggleFollow]
   );
 
   const handleNavigate = useCallback(() => {
