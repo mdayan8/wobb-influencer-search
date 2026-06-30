@@ -22,6 +22,8 @@ import {
   TrendingUp,
   BarChart3,
   FileText,
+  UserPlus,
+  UserCheck,
 } from "lucide-react";
 
 type ProfileState =
@@ -57,7 +59,8 @@ export function ProfileDetailPage() {
   const platform = searchParams.get("platform") || "unknown";
   const [state, dispatch] = useReducer(profileReducer, { status: "idle" });
 
-  const { addProfile, removeProfile, isInList } = useProfileStore();
+  const { addProfile, removeProfile, isInList, toggleFollow, isFollowing } =
+    useProfileStore();
 
   useEffect(() => {
     if (!username) return;
@@ -274,6 +277,27 @@ export function ProfileDetailPage() {
                     Visit Profile
                   </a>
                 )}
+                <button
+                  onClick={() => toggleFollow(user.user_id)}
+                  className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
+                    isFollowing(user.user_id)
+                      ? "bg-rose-100 text-rose-600 hover:bg-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:hover:bg-rose-500/25"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                  }`}
+                  aria-label={isFollowing(user.user_id) ? "Unfollow" : "Follow"}
+                >
+                  {isFollowing(user.user_id) ? (
+                    <>
+                      <UserCheck className="h-4 w-4" />
+                      Following
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="h-4 w-4" />
+                      Follow
+                    </>
+                  )}
+                </button>
                 <button
                   onClick={() => handleToggleList(user)}
                   className={`flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold transition-all ${

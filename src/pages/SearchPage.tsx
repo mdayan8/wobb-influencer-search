@@ -6,18 +6,23 @@ import { ProfileList } from "@/components/ProfileList";
 import { SelectedListPanel } from "@/components/SelectedListPanel";
 import { extractProfiles, filterProfiles } from "@/utils/dataHelpers";
 import { useProfileStore } from "@/stores/useProfileStore";
-import { List } from "lucide-react";
+import { List, Users, TrendingUp } from "lucide-react";
 
 export function SearchPage() {
   const [platform, setPlatform] = useState<Platform>("instagram");
   const [searchQuery, setSearchQuery] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
-  const selectedProfiles = useProfileStore((s) => s.selectedProfiles);
+  const { selectedProfiles, followedProfiles } = useProfileStore();
 
   const allProfiles = useMemo(() => extractProfiles(platform), [platform]);
   const filtered = useMemo(
     () => filterProfiles(allProfiles, searchQuery),
     [allProfiles, searchQuery]
+  );
+
+  const followedCount = useMemo(
+    () => Object.values(followedProfiles).filter(Boolean).length,
+    [followedProfiles]
   );
 
   const handlePlatformChange = useCallback((p: Platform) => {
@@ -30,13 +35,45 @@ export function SearchPage() {
       <div className="flex gap-6">
         {/* Main content */}
         <div className="min-w-0 flex-1">
-          <div className="mb-6 text-center">
+          {/* Hero section */}
+          <div className="mb-8 text-center">
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
-              Find Influencers
+              Discover Influencers
             </h2>
             <p className="mt-2 text-base text-slate-500 dark:text-slate-400">
-              Browse top creators across social platforms
+              Browse top creators across Instagram, YouTube, and TikTok
             </p>
+
+            {/* Quick stats */}
+            <div className="mt-4 flex items-center justify-center gap-6 text-sm">
+              <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                <Users className="h-4 w-4" />
+                <span>
+                  <span className="font-semibold text-slate-900 dark:text-white">
+                    {allProfiles.length}
+                  </span>{" "}
+                  creators
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                <TrendingUp className="h-4 w-4" />
+                <span>
+                  <span className="font-semibold text-violet-600 dark:text-violet-400">
+                    {followedCount}
+                  </span>{" "}
+                  followed
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                <List className="h-4 w-4" />
+                <span>
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                    {selectedProfiles.length}
+                  </span>{" "}
+                  in list
+                </span>
+              </div>
+            </div>
           </div>
 
           <PlatformFilter
@@ -44,6 +81,7 @@ export function SearchPage() {
             onChange={handlePlatformChange}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
+            profiles={allProfiles}
           />
 
           <div className="mb-4 flex items-center justify-between">

@@ -3,12 +3,14 @@ import { PLATFORMS, getPlatformLabel } from "@/utils/dataHelpers";
 import { SearchBar } from "./SearchBar";
 import { Instagram, Youtube, Music2 } from "lucide-react";
 import clsx from "clsx";
+import type { UserProfileSummary } from "@/types";
 
 interface PlatformFilterProps {
   selected: Platform;
   onChange: (platform: Platform) => void;
   searchQuery: string;
   onSearchChange: (value: string) => void;
+  profiles: UserProfileSummary[];
 }
 
 const platformIcons: Record<Platform, React.ReactNode> = {
@@ -22,6 +24,7 @@ export function PlatformFilter({
   onChange,
   searchQuery,
   onSearchChange,
+  profiles,
 }: PlatformFilterProps) {
   return (
     <div className="mb-6 space-y-4">
@@ -49,7 +52,11 @@ export function PlatformFilter({
       </nav>
 
       <div className="mx-auto max-w-md">
-        <SearchBar value={searchQuery} onChange={onSearchChange} />
+        <SearchBar
+          value={searchQuery}
+          onChange={onSearchChange}
+          profiles={profiles}
+        />
       </div>
     </div>
   );

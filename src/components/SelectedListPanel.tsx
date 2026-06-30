@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { formatFollowers } from "@/utils/formatters";
 import { VerifiedBadge } from "./VerifiedBadge";
-import { X, Trash2, ListX } from "lucide-react";
+import { X, Trash2, ListX, UserCheck, UserPlus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SelectedListPanelProps {
@@ -17,7 +17,8 @@ export const SelectedListPanel = memo(function SelectedListPanel({
   onClose,
   isDesktop = false,
 }: SelectedListPanelProps) {
-  const { selectedProfiles, removeProfile, clearList } = useProfileStore();
+  const { selectedProfiles, removeProfile, clearList, toggleFollow, isFollowing } =
+    useProfileStore();
   const navigate = useNavigate();
 
   const handleProfileClick = useCallback(
@@ -108,8 +109,23 @@ export const SelectedListPanel = memo(function SelectedListPanel({
                   </div>
                 </button>
                 <button
+                  onClick={() => toggleFollow(profile.user_id)}
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                    isFollowing(profile.user_id)
+                      ? "bg-rose-100 text-rose-600 hover:bg-rose-200 dark:bg-rose-500/15 dark:text-rose-400"
+                      : "text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+                  }`}
+                  aria-label={isFollowing(profile.user_id) ? `Unfollow ${profile.fullname}` : `Follow ${profile.fullname}`}
+                >
+                  {isFollowing(profile.user_id) ? (
+                    <UserCheck className="h-3.5 w-3.5" />
+                  ) : (
+                    <UserPlus className="h-3.5 w-3.5" />
+                  )}
+                </button>
+                <button
                   onClick={() => removeProfile(profile.user_id)}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400"
                   aria-label={`Remove ${profile.fullname} from list`}
                 >
                   <X className="h-4 w-4" />
