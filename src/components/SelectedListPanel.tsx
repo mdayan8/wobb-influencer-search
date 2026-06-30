@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { formatFollowers } from "@/utils/formatters";
 import { VerifiedBadge } from "./VerifiedBadge";
-import { X, Trash2, ListX, UserCheck, UserPlus } from "lucide-react";
+import { X, Trash2, ListX, UserCheck, UserPlus, Instagram, Youtube, Music2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import clsx from "clsx";
+import type { Platform } from "@/types";
 
 interface SelectedListPanelProps {
   isOpen: boolean;
@@ -22,12 +24,18 @@ export const SelectedListPanel = memo(function SelectedListPanel({
   const navigate = useNavigate();
 
   const handleProfileClick = useCallback(
-    (username: string) => {
-      navigate(`/profile/${username}`);
+    (username: string, platform?: Platform) => {
+      navigate(`/profile/${username}?platform=${platform || "instagram"}`);
       onClose();
     },
     [navigate, onClose]
   );
+
+  const platformConfig: Record<string, { icon: typeof Instagram; color: string; bg: string; label: string }> = {
+    instagram: { icon: Instagram, color: "text-pink-600 dark:text-pink-400", bg: "bg-pink-100 dark:bg-pink-500/15", label: "Instagram" },
+    youtube: { icon: Youtube, color: "text-red-600 dark:text-red-400", bg: "bg-red-100 dark:bg-red-500/15", label: "YouTube" },
+    tiktok: { icon: Music2, color: "text-slate-900 dark:text-white", bg: "bg-slate-200 dark:bg-slate-700", label: "TikTok" },
+  };
 
   const panelContent = (
     <div className="flex h-full flex-col border-l border-slate-200/60 bg-white dark:border-slate-700/60 dark:bg-slate-900">
@@ -87,7 +95,7 @@ export const SelectedListPanel = memo(function SelectedListPanel({
                 className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/50"
               >
                 <button
-                  onClick={() => handleProfileClick(profile.username)}
+                  onClick={() => handleProfileClick(profile.username, profile.platform)}
                   className="flex min-w-0 flex-1 items-center gap-3 text-left"
                   aria-label={`View ${profile.fullname}'s profile`}
                 >
@@ -103,9 +111,21 @@ export const SelectedListPanel = memo(function SelectedListPanel({
                       </span>
                       <VerifiedBadge verified={profile.is_verified} />
                     </div>
-                    <p className="truncate text-xs text-slate-500 dark:text-slate-400">
-                      {profile.fullname} · {formatFollowers(profile.followers)}
-                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="truncate text-xs text-slate-500 dark:text-slate-400">
+                        {profile.fullname} · {formatFollowers(profile.followers)}
+                      </p>
+                      {profile.platform && (() => {
+                        const config = platformConfig[profile.platform];
+                        if (!config) return null;
+                        const Icon = config.icon;
+                        return (
+                          <span className={clsx("inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium", config.bg, config.color)}>
+                            <Icon className="h-2.5 w-2.5" />
+                          </span>
+                        );
+                      })()}
+                    </div>
                   </div>
                 </button>
                 <button
