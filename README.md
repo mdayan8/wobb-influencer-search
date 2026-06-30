@@ -2,7 +2,7 @@
 
 A redesigned influencer search application built with **React 19**, **TypeScript**, **Vite**, **Tailwind CSS 4**, and **Zustand**.
 
-**Live URL:** _deploying..._
+**Live URL:** https://wobb-assignment-wheat.vercel.app
 
 ## What Changed
 
