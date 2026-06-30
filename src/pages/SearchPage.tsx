@@ -38,20 +38,20 @@ export function SearchPage() {
     <Layout title="Find Influencers">
       <div className="flex gap-6">
         {/* Main content */}
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 overflow-hidden">
           {/* Hero section */}
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+          <div className="mb-6 text-center">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
               Discover Influencers
             </h2>
-            <p className="mt-2 text-base text-slate-500 dark:text-slate-400">
+            <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
               Browse top creators across Instagram, YouTube, and TikTok
             </p>
 
             {/* Quick stats */}
-            <div className="mt-4 flex items-center justify-center gap-6 text-sm">
+            <div className="mt-3 flex items-center justify-center gap-5 text-xs">
               <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                <Users className="h-4 w-4" />
+                <Users className="h-3.5 w-3.5" />
                 <span>
                   <span className="font-semibold text-slate-900 dark:text-white">
                     {allProfiles.length}
@@ -60,7 +60,7 @@ export function SearchPage() {
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-3.5 w-3.5" />
                 <span>
                   <span className="font-semibold text-violet-600 dark:text-violet-400">
                     {followedCount}
@@ -69,7 +69,7 @@ export function SearchPage() {
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                <List className="h-4 w-4" />
+                <List className="h-3.5 w-3.5" />
                 <span>
                   <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                     {selectedProfiles.length}
@@ -88,8 +88,8 @@ export function SearchPage() {
             profiles={allProfiles}
           />
 
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+          <div className="mb-3 flex items-center justify-between">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Showing{" "}
               <span className="font-semibold text-slate-900 dark:text-white">
                 {filtered.length}
@@ -104,12 +104,12 @@ export function SearchPage() {
             {/* Mobile toggle for selected list */}
             <button
               onClick={() => setPanelOpen(true)}
-              className="flex items-center gap-2 rounded-xl bg-violet-50 px-3.5 py-2 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:bg-violet-500/10 dark:text-violet-400 dark:hover:bg-violet-500/20 lg:hidden"
+              className="flex items-center gap-2 rounded-xl bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700 transition-colors hover:bg-violet-100 dark:bg-violet-500/10 dark:text-violet-400 dark:hover:bg-violet-500/20 lg:hidden"
               aria-label="Open selected profiles panel"
             >
-              <List className="h-4 w-4" />
+              <List className="h-3.5 w-3.5" />
               {selectedProfiles.length > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-violet-600 text-[10px] font-bold text-white">
+                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-violet-600 text-[9px] font-bold text-white">
                   {selectedProfiles.length}
                 </span>
               )}
@@ -120,7 +120,7 @@ export function SearchPage() {
         </div>
 
         {/* Desktop sidebar */}
-        <div className="hidden lg:block">
+        <div className="hidden shrink-0 lg:block">
           <SelectedListPanel
             isOpen={true}
             onClose={() => setPanelOpen(false)}

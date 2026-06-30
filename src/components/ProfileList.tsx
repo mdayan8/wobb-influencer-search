@@ -25,7 +25,7 @@ export function ProfileList({ profiles, platform }: ProfileListProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {profiles.map((profile) => (
         <ProfileCard
           key={profile.user_id}
